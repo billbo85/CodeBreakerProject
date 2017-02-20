@@ -2,66 +2,56 @@ let answer = document.getElementById('answer').value;
 let attempt = document.getElementById('attempt').value;
 
 function guess() {
-    let input = document.getElementById('user-guess');
 
+    let input = document.getElementById('user-guess').value;
     //add functionality to guess function here
-    if (attempt == '' || answer == '') {
+    if (answer == '') {
         setHiddenFields();
     }
 
-    if (!validateInput(input.value))
-    {
-        return false;
-    } else {
-        attempt++;
-    }
+    if (validateInput(input)) {
 
-    if (getResults(input.value)) {
-        setMessage("You Win! :)");
-        showAnswer(true);
-        showReplay();
-    } else {
-        if (attempt >= 10) {
-            setMessage("You Lose :(");
-            showAnswer(false);
-            showReplay();
+        if (getResults(input)) {
+            setMessage("You Win! :)");
+            showAnswer(true);
         } else {
-            setMessage("Incorrect, try again.");
+            if (attempt >= 10) {
+                setMessage("You Lose :(");
+                showAnswer(false);
+
+            } else {
+                setMessage("Incorrect, try again.");
+            }
         }
     }
-
 }
 //implement new functions here
 function setHiddenFields() {
-
-    attempt = 0;
-    answer = Math.floor(Math.random() * 9999).toString();
-
-    while (answer.length < 4) {
-        answer = "0"+answer;
+    let randomNr = Math.floor(Math.random() * 9999).toString();
+    while (randomNr.length < 4) {
+        randomNr = "0"+randomNr;
     }
-    console.log("answer: " + answer);
+    answer = randomNr;
+    attempt = 0;
 }
-
 function setMessage(message) {
     document.getElementById("message").innerHTML = message;
 }
-
 function validateInput(input) {
     if (input.length != 4) {
         setMessage("Guesses must be exactly 4 characters long.");
         return false;
     }
+    attempt++;
     return true;
 }
-
 function getResults(input) {
-    let correctGuesses = 0;
+    let correct = 0;
     let html = "<div class='row'><span class='col-md-6'>" + input + "</span>";
     html += "<div class='col-md-6'>";
     for (let i = 0; i < input.length; i++) {
         if (input.charAt(i) == answer.charAt(i)) {
-            correctGuesses++;
+            correct++;
             html += "<span class='glyphicon glyphicon-ok'></span>";
         } else if (answer.indexOf(input.charAt(i)) != -1) {
             html += "<span class='glyphicon glyphicon-transfer'></span>";
@@ -72,13 +62,12 @@ function getResults(input) {
     html += "</div></div>";
     document.getElementById("results").innerHTML += html;
 
-    if (correctGuesses == input.length) {
+    if (correct == input.length) {
         return true;
     } else {
         return false;
     }
 }
-
 function showAnswer(correct) {
     document.getElementById("code").innerHTML = answer;
     if (correct) {
@@ -86,8 +75,8 @@ function showAnswer(correct) {
     } else {
         document.getElementById("code").className += " failure";
     }
+    showReplay();
 }
-
 function showReplay() {
     document.getElementById("guessing-div").style.display = "none";
     document.getElementById("replay-div").style.display = "block";
