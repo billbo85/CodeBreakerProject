@@ -1,10 +1,11 @@
-let answer = document.getElementById('answer');
-let attempt = document.getElementById('attempt');
+let answer = document.getElementById('answer').value;
+let attempt = document.getElementById('attempt').value;
 
 function guess() {
     let input = document.getElementById('user-guess');
+
     //add functionality to guess function here
-    if (attempt.value == '' || answer.value == '') {
+    if (attempt == '' || answer == '') {
         setHiddenFields();
     }
 
