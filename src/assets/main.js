@@ -1,39 +1,44 @@
-let answer = document.getElementById('answer').value;
-let attempt = document.getElementById('attempt').value;
 
+let attempt = document.getElementById('attempt');
+let answer = document.getElementById('answer');
 function guess() {
 
-    let input = document.getElementById('user-guess').value;
+    let input = document.getElementById('user-guess');
     //add functionality to guess function here
-    if (answer == '') {
+
+    if (answer.value == '' || attempt.value == '') {
         setHiddenFields();
     }
 
-    if (validateInput(input)) {
 
-        if (getResults(input)) {
+
+    if (validateInput(input.value)) {
+
+        if (getResults(input.value)) {
             setMessage("You Win! :)");
             showAnswer(true);
         } else {
-            if (attempt >= 10) {
-                setMessage("You Lose :(");
+            if (attempt.value >= 10) {
+                setMessage("You Lose! :(");
                 showAnswer(false);
+                showReplay();
 
             } else {
                 setMessage("Incorrect, try again.");
+                showReplay();
             }
         }
     }
 }
 //implement new functions here
 function setHiddenFields() {
-    let randomNr = Math.floor(Math.random() * 9999).toString();
-    while (randomNr.length < 4) {
-        randomNr = "0"+randomNr;
+    answer.value = Math.floor(Math.random() * 10000).toString();
+    while (answer.value.length < 4) {
+        answer.value = "0" + answer.value;
     }
-    answer = randomNr;
-    attempt = 0;
+        attempt.value = 0;
 }
+
 function setMessage(message) {
     document.getElementById("message").innerHTML = message;
 }
@@ -42,7 +47,7 @@ function validateInput(input) {
         setMessage("Guesses must be exactly 4 characters long.");
         return false;
     }
-    attempt++;
+    attempt.value++;
     return true;
 }
 function getResults(input) {
@@ -50,10 +55,10 @@ function getResults(input) {
     let html = "<div class='row'><span class='col-md-6'>" + input + "</span>";
     html += "<div class='col-md-6'>";
     for (let i = 0; i < input.length; i++) {
-        if (input.charAt(i) == answer.charAt(i)) {
+        if (input.charAt(i) == answer.value.charAt(i)) {
             correct++;
             html += "<span class='glyphicon glyphicon-ok'></span>";
-        } else if (answer.indexOf(input.charAt(i)) != -1) {
+        } else if (answer.value.indexOf(input.charAt(i)) != -1) {
             html += "<span class='glyphicon glyphicon-transfer'></span>";
         } else {
             html += "<span class='glyphicon glyphicon-remove'></span>";
@@ -69,13 +74,12 @@ function getResults(input) {
     }
 }
 function showAnswer(correct) {
-    document.getElementById("code").innerHTML = answer;
+    document.getElementById("code").innerHTML = answer.value;
     if (correct) {
         document.getElementById("code").className += " success";
     } else {
         document.getElementById("code").className += " failure";
     }
-    showReplay();
 }
 function showReplay() {
     document.getElementById("guessing-div").style.display = "none";
